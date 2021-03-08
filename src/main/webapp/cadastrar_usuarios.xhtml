@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Cadastrar Usuários</ui:define>
+	<ui:define name="description">Cadastra usuários manualmente</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Cadastrar usuários" />
+		<h:form>
+			<div class="ui-fluid">
+				<p:panel id="busca" header="Busca">
+					<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-9" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="value" value="CPF:" />
+						<p:inputText id="value" value="#{cadastrarUsuarios.cpf}" converter="cpf" required="true" requiredMessage="O CPF é obrigatório." />
+						<p:commandButton value="Buscar" action="#{cadastrarUsuarios.buscar}" update="informacoes" />
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:panel id="informacoes" header="Informações do usuário">
+					<h:outputText value="Digite o CPF do militar" rendered="#{cadastrarUsuarios.cadastradoLu eq null}" />
+					<p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank" rendered="#{cadastrarUsuarios.cadastradoLu ne null}">
+						<p:outputLabel value="CPF:" />
+						<h:outputText value="#{cadastrarUsuarios.cadastradoLu.cpf}" converter="cpf" />
+						<p:outputLabel value="SARAM:" />
+						<h:outputText value="#{cadastrarUsuarios.cadastradoLu.saram}" converter="saram" />
+						<p:outputLabel value="Nome Completo:" />
+						<h:outputText value="#{cadastrarUsuarios.cadastradoLu.nomeCompleto}" converter="nomeCompleto" />
+						<p:outputLabel value="Nome de Guerra:" />
+						<h:outputText value="#{cadastrarUsuarios.cadastradoLu.nomeGuerra}" />
+						<p:outputLabel value="OM:" />
+						<h:outputText value="#{cadastrarUsuarios.cadastradoLu.om}" />
+						<p:outputLabel value="ZIMBRA:" />
+						<h:outputText value="#{cadastrarUsuarios.cadastradoLu.zimbra}" />
+						<p:outputLabel value="Internet:" />
+						<p:rating value="#{cadastrarUsuarios.cadastradoLu.nivelInternet}" stars="#{cadastrarUsuarios.cadastradoLu.nivelInternet}" readonly="true" />
+						<p:outputLabel value="Email:" />
+						<h:outputText value="#{index.loginUnicoUsuario.emailRecuperacao}" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-6,ui-g-12 ui-md-6" layout="grid" styleClass="ui-panelgrid-blank" rendered="#{cadastrarUsuarios.cadastradoLu ne null}">
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{cadastrarUsuarios.cadastradoLu.status}" onLabel="Conta ativa" offLabel="Conta desativada" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{cadastrarUsuarios.cadastradoLu.termoAssinado}" onLabel="Termo assinado" offLabel="Termo não assinado" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{!cadastrarUsuarios.cadastradoLu.contaExpirada}" onLabel="Conta não expirada" offLabel="Conta expirada" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{cadastrarUsuarios.cadastradoLu.emailLiberado}" onLabel="Possui email funcional" offLabel="Não possui email funcional" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{cadastrarUsuarios.cadastradoLu.internetLiberada}" onLabel="Tem acesso a internet" offLabel="Sem acesso a internet" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{cadastrarUsuarios.cadastradoLu.vpn}" onLabel="Tem acesso via VPN" offLabel="Sem acesso via VPN" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+					</p:panelGrid>
+					<p:spacer />
+					<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank" rendered="#{cadastrarUsuarios.cadastradoLu ne null}">
+						<p:commandButton value="Cadastrar" styleClass="btn-info" action="#{cadastrarUsuarios.cadastrar}" update="@form" />						
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

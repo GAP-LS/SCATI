@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<ui:include src="/WEB-INF/template/head.xhtml" />
+</h:head>
+<h:body styleClass="thm-background-fab">
+	<p:growl id="message" showSummary="true" showDetail="true" />
+	<div class="ui-g">
+		<div class="ui-g-3">&nbsp;</div>
+		<div class="ui-g-6">
+			<div class="ui-fluid">
+				<p:panel header="Portal Local" styleClass="thm-h1">
+					<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank text-center">
+						<p:graphicImage styleClass="text-center" library="images" name="gapls.png" />
+						<h:outputText value="Sua sessão expirou" styleClass="thm-h2" />
+						<p:linkButton href="login.xhtml" value="Voltar para o Sistema" />
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</div>
+		<div class="ui-g-3">&nbsp;</div>
+	</div>
+</h:body>
+</html>

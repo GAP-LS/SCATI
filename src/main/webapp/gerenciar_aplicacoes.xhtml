@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Gerenciar Aplicações</ui:define>
+	<ui:define name="description">Gerencia a liberação de usuários para alterar os perfis das aplicações</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Gerenciar aplicações" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{gerenciarAplicacoes.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{not sessao.usuario.aplicacaos.isEmpty()}">
+			<p:panel header="Selecionar usuário">
+				<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank">
+					<p:selectOneMenu value="#{gerenciarAplicacoes.usuario}" converter="omnifaces.SelectItemsIndexConverter" filter="true" filterMatchMode="contains">
+						<f:selectItems var="u" value="#{gerenciarAplicacoes.usuariosAtivos}" />
+						<p:ajax event="itemSelect" update="administrar" listener="#{gerenciarAplicacoes.mudarOpcoes}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+			</p:panel>
+			<p:spacer />
+			<p:panel id="administrar" header="Aplicações do usuário">
+				<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank">
+					<p:pickList value="#{gerenciarAplicacoes.aplicacaos}" var="aplicacao" itemLabel="#{aplicacao}" itemValue="#{aplicacao}" converter="aplicacao" responsive="true">
+						<f:facet name="sourceCaption">Aplicações disponíveis</f:facet>
+						<f:facet name="targetCaption">Aplicações do usuário</f:facet>
+						<p:column style="width: 20%;">
+							<h:outputText value="#{aplicacao.sigla}" />
+						</p:column>
+						<p:column style="width: 80%;">
+							<h:outputText value="#{aplicacao.nome}" />
+						</p:column>
+					</p:pickList>
+					<p:commandButton value="Salvar liberações" action="#{gerenciarAplicacoes.salvar}" styleClass="btn-primary btn-block"/>
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

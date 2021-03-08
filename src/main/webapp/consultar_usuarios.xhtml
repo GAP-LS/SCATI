@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				xmlns:pe="http://primefaces.org/ui/extensions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Consultar Usuários</ui:define>
+	<ui:define name="description">Consulta usuários nas OMs apoiadas ou na FAB</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Consultar usuários" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{consultarUsuarios.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.hasPerfil('CUS DEV')}">
+			<div class="ui-fluid">
+				<p:panel id="busca" header="Busca">
+					<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-9" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="value" value="Busca:" />
+						<p:inputText id="value" value="#{consultarUsuarios.value}" converter="cpf" required="true" requiredMessage="O campo de busca é necessário." />
+						<p:outputLabel for="type" value="Tipo:" />
+						<p:selectOneButton id="type" value="#{consultarUsuarios.type}" unselectable="false" required="true">
+							<f:selectItem itemLabel="CPF ou SARAM" itemValue="nid" />
+							<f:selectItem itemLabel="Nome de Guerra" itemValue="nguerra" />
+							<f:selectItem itemLabel="Nome Completo" itemValue="ncompleto" />
+						</p:selectOneButton>
+						<p:outputLabel for="local" value="Local:" />
+						<p:selectOneButton id="local" value="#{consultarUsuarios.local}" unselectable="false" required="true">
+							<f:selectItem itemLabel="OM (Local e apoiadas)" itemValue="om" />
+							<f:selectItem itemLabel="Força Aérea" itemValue="fab" />
+						</p:selectOneButton>
+						<p:commandButton value="Buscar" action="#{consultarUsuarios.buscar}" update="luInformation,uInformation,uPerfils" />
+					</p:panelGrid>
+				</p:panel>
+			</div>
+			<p:spacer />
+			<div class="ui-fluid">
+				<p:panel id="luInformation" header="Informações do usuário">
+					<h:outputText value="Digite os dados da busca." rendered="#{consultarUsuarios.loginUnicoUsuario eq null and consultarUsuarios.encontrados eq null}" />
+					<p:dataTable var="u" value="#{consultarUsuarios.encontrados}" paginator="true" rows="5" paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" currentPageReportTemplate="({currentPage} de {totalPages})" rowsPerPageTemplate="5,10,20" rendered="#{fn:length(consultarUsuarios.encontrados) ge 2}">
+						<p:column headerText="CPF">
+							<h:outputText value="#{u.cpf}" converter="cpf" />
+						</p:column>
+						<p:column headerText="Patente">
+							<h:outputText value="#{u.patente}" />
+						</p:column>
+						<p:column headerText="Nome de Guerra">
+							<h:outputText value="#{u.nomeGuerra}" />
+						</p:column>
+						<p:column headerText="OM">
+							<h:outputText value="#{u.omAtual}" />
+						</p:column>
+						<p:column headerText="OM Serviço">
+							<h:outputText value="#{u.omPrestacaoServico}" />
+						</p:column>
+						<p:column style="width: 50px; text-align: right;">
+							<p:tooltip position="top" showEffect="fade" hideEffect="fade" />
+							<p:commandButton action="#{consultarUsuarios.selecionar}" icon="fa fa-search" title="Selecionar" ajax="false">
+								<f:setPropertyActionListener value="nid" target="#{consultarUsuarios.type}" />
+								<f:setPropertyActionListener value="#{u.cpf}" target="#{consultarUsuarios.value}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+					<p:panelGrid columns="6" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-3,ui-g-12 ui-md-1,ui-g-12 ui-md-2,ui-g-12 ui-md-3,ui-g-12 ui-md-1" layout="grid" styleClass="ui-panelgrid-blank" rendered="#{consultarUsuarios.loginUnicoUsuario ne null}">
+						<p:outputLabel value="CPF:" />
+						<h:outputText value="#{consultarUsuarios.loginUnicoUsuario.cpf}" converter="cpf" />
+						<p:commandButton id="btnCpf" icon="fa fa-copy" style="height: 1.2em" />
+						<p:outputLabel value="SARAM:" />
+						<h:outputText value="#{consultarUsuarios.loginUnicoUsuario.saram}" converter="saram" />
+						<p:commandButton id="btnSaram" icon="fa fa-copy" style="height: 1.2em" />
+						<pe:clipboard trigger="btnCpf" text="#{consultarUsuarios.loginUnicoUsuario.cpf}" />
+						<pe:clipboard trigger="btnSaram" text="#{consultarUsuarios.loginUnicoUsuario.saram}" />
+					</p:panelGrid>
+					<p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank" rendered="#{consultarUsuarios.loginUnicoUsuario ne null}">
+						<p:outputLabel value="Nome Completo:" />
+						<h:outputText value="#{consultarUsuarios.loginUnicoUsuario.nomeCompleto}" converter="nomeCompleto" />
+						<p:outputLabel value="Nome de Guerra:" />
+						<h:outputText value="#{consultarUsuarios.loginUnicoUsuario.patente} #{consultarUsuarios.loginUnicoUsuario.nomeGuerra}" />
+						<p:outputLabel value="OM:" />
+						<h:outputText value="#{consultarUsuarios.loginUnicoUsuario.om}" />
+						<p:outputLabel value="ZIMBRA:" />
+						<h:outputText value="#{consultarUsuarios.loginUnicoUsuario.zimbra}" />
+						<p:outputLabel value="Nível de Internet:" />
+						<p:rating value="#{consultarUsuarios.loginUnicoUsuario.nivelInternet}" readonly="true" />
+						<p:outputLabel value="Email:" />
+						<h:outputText value="#{consultarUsuarios.loginUnicoUsuario.emailRecuperacao}" />
+					</p:panelGrid>
+					<p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-6,ui-g-12 ui-md-6,ui-g-12 ui-md-6,ui-g-12 ui-md-6" layout="grid" styleClass="ui-panelgrid-blank" rendered="#{consultarUsuarios.loginUnicoUsuario ne null}">
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{consultarUsuarios.loginUnicoUsuario.status}" onLabel="Conta ativa" offLabel="Conta desativada" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{consultarUsuarios.loginUnicoUsuario.termoAssinado}" onLabel="Termo assinado" offLabel="Termo não assinado" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{!consultarUsuarios.loginUnicoUsuario.contaExpirada}" onLabel="Conta não expirada" offLabel="Conta expirada" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{consultarUsuarios.loginUnicoUsuario.emailLiberado}" onLabel="Possui email funcional" offLabel="Não possui email funcional" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{consultarUsuarios.loginUnicoUsuario.internetLiberada}" onLabel="Tem acesso a internet" offLabel="Sem acesso a internet" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{consultarUsuarios.loginUnicoUsuario.vpn}" onLabel="Tem acesso via VPN" offLabel="Sem acesso via VPN" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:panel id="uInformation" header="Informações da conta local">
+					<h:outputText value="Digite os dados da busca." rendered="#{consultarUsuarios.loginUnicoUsuario eq null}" />
+					<h:outputText value="Usuário não cadastrado." rendered="#{consultarUsuarios.loginUnicoUsuario ne null and consultarUsuarios.usuario eq null}" />
+					<p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank" rendered="#{consultarUsuarios.loginUnicoUsuario ne null and consultarUsuarios.usuario ne null}">
+						<p:outputLabel value="Moderador:" />
+						<h:outputText value="#{consultarUsuarios.usuario.moderador}" />
+						<p:outputLabel value="Data da moderação:" />
+						<h:outputText value="#{consultarUsuarios.usuario.dataInsercao}">
+							<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+						</h:outputText>
+					</p:panelGrid>
+					<p:spacer rendered="#{consultarUsuarios.usuario ne null and not empty consultarUsuarios.historicoCadastros}" />
+					<p:dataTable var="h" value="#{consultarUsuarios.historicoCadastros}" rendered="#{consultarUsuarios.usuario ne null and not empty consultarUsuarios.historicoCadastros}">
+						<f:facet name="header">
+							<h:outputText value="Cadastros anteriores" />
+						</f:facet>
+						<p:column headerText="Moderador">
+							<h:outputText value="#{h.moderador}" />
+						</p:column>
+						<p:column headerText="Finalizador">
+							<h:outputText value="#{h.finalizador}" />
+						</p:column>
+						<p:column headerText="Data Inicial">
+							<h:outputText value="#{h.dataInsercao}">
+								<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Data Final">
+							<h:outputText value="#{h.dataRemocao}">
+								<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+							</h:outputText>
+						</p:column>
+						<f:facet name="footer">Total: #{fn:length(consultarUsuarios.historicoCadastros)}</f:facet>
+					</p:dataTable>
+				</p:panel>
+				<p:spacer />
+				<p:panel id="uPerfils" header="Perfis">
+					<h:outputText value="Digite os dados da busca." rendered="#{consultarUsuarios.loginUnicoUsuario eq null}" />
+					<h:outputText value="Usuário não cadastrado." rendered="#{consultarUsuarios.loginUnicoUsuario ne null and consultarUsuarios.usuario eq null}" />
+					<p:panelGrid columns="3" columnClasses="ui-g-12 ui-lg-4,ui-g-12 ui-lg-4,ui-g-12 ui-lg-4" layout="grid" styleClass="ui-panelgrid-blank" rendered="#{consultarUsuarios.loginUnicoUsuario ne null and consultarUsuarios.usuario ne null}">
+						<c:forEach items="#{consultarUsuarios.usuario.perfils}" var="p">
+							<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{true}" onLabel="#{p.codigo} - #{p.titulo}" onIcon="ui-icon-check" disabled="true" />
+						</c:forEach>
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

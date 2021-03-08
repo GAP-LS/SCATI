@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Registrar Cautela</ui:define>
+	<ui:define name="description">Registra cautelas cedidas ao usuário</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Registrar cautela" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{pagarCautelas.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.hasPerfil('GCP DEV')}">
+			<div class="ui-fluid">
+				<p:panel header="Selecionar usuário">
+					<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:selectOneMenu value="#{pagarCautelas.usuario}" converter="omnifaces.SelectItemsIndexConverter" filter="true" filterMatchMode="contains">
+							<f:selectItems var="u" value="#{pagarCautelas.usuarios}" itemDisabled="#{not u.habilitado}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:panel id="registrar" header="Registrar Cautela">
+					<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:inputText value="#{pagarCautelas.descricao}" required="true" placeholder="Descrição da cautela" requiredMessage="Digite a descrição da cautela" />
+					</p:panelGrid>
+					<p:panelGrid columns="3" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-7,ui-g-12 ui-md-3" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="assinatura" value="Assinatura:" />
+						<p:password id="assinatura" value="#{pagarCautelas.assinatura}" required="true" requiredMessage="O usuário precisa fornecer a senha" />
+						<p:commandButton value="Assinar" action="#{pagarCautelas.assinar}" update="registrar" />
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Usuários Aguardando Moderação</ui:define>
+	<ui:define name="description">Lista de usuários pendentes de moderação da chefia</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Aguardando moderação" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{aguardandoModeracao.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.podeModerar or sessao.usuario.hasPerfil('CUS DEV')}">
+			<p:dataTable var="u" value="#{aguardandoModeracao.aguardandoModeracao}" rowsPerPageTemplate="10,20" emptyMessage="Nenhum registro encontrado.">
+				<f:facet name="header">
+					<h:outputText value="Usuários aguardando moderação" />
+				</f:facet>
+				<p:column headerText="Nome" filterBy="#{u.nome}" filterMatchMode="contains">
+					<h:outputText value="#{u.nome}" />
+				</p:column>
+				<p:column headerText="OM" filterBy="#{u.om}" filterMatchMode="contains">
+					<h:outputText value="#{u.om}" />
+				</p:column>
+				<p:column headerText="CPF" filterBy="#{u.cpf}" filterMatchMode="contains">
+					<h:outputText value="#{u.cpf}" converter="cpf" />
+				</p:column>
+				<p:column headerText="Moderador" filterBy="#{u.moderador.nome}" filterMatchMode="contains">
+					<h:outputText value="#{u.moderador}" />
+				</p:column>
+				<p:column style="width: 50px; text-align: right;">
+					<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+					<p:commandButton action="#{aguardandoModeracao.forcarModeracao}" icon="fa fa-user-plus" title="Forçar moderação" update="@form" styleClass="btn-danger">
+						<f:setPropertyActionListener value="#{u}" target="#{aguardandoModeracao.usuarioForcado}" />
+					</p:commandButton>
+				</p:column>
+				<f:facet name="footer">Total: #{fn:length(aguardandoModeracao.aguardandoModeracao)}</f:facet>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

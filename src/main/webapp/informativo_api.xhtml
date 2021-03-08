@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				xmlns:pe="http://primefaces.org/ui/extensions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Informativo API v2</ui:define>
+	<ui:define name="description">Mostra informações para utilização das APIs</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Minhas aplicações" />
+		<p:growl id="growl" />
+		<h:panelGrid columns="1">
+			<h:outputText value="Solicitação de código/token" styleClass="h3" />
+			<p:spacer />
+			<p:staticMessage severity="info" detail="O código retornado para a URL de callback é o próprio token" />
+			<p:spacer />
+			<h:outputText value="GET /oauth/v2/login" />
+		</h:panelGrid>
+		<p:spacer />
+		<p:dataTable var="info" value="#{v2.requestCodeInput}" rowStyleClass="thm-background-white">
+			<f:facet name="header">Dados da solicitação</f:facet>
+			<p:column headerText="Parâmetro" width="25%">
+				<h:outputText value="#{info.parameter}" />
+			</p:column>
+			<p:column headerText="Local" width="15%">
+				<h:outputText value="#{info.local}" />
+			</p:column>
+			<p:column headerText="Obrigatório" width="10%">
+				<h:outputText value="Sim" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{info.description}" />
+			</p:column>
+		</p:dataTable>
+		<p:spacer />
+		<h:panelGrid columns="1">
+			<h:outputText value="Solicitação de token" styleClass="h3" />
+			<p:spacer />
+			<h:outputText value="POST /resources/v2/token" />
+		</h:panelGrid>
+		<p:spacer />
+		<p:dataTable var="info" value="#{v2.requestTokenInput}" rowStyleClass="thm-background-white">
+			<f:facet name="header">Dados da solicitação</f:facet>
+			<p:column headerText="Parâmetro" width="25%">
+				<h:outputText value="#{info.parameter}" />
+			</p:column>
+			<p:column headerText="Local" width="15%">
+				<h:outputText value="#{info.local}" />
+			</p:column>
+			<p:column headerText="Obrigatório" width="10%">
+				<h:outputText value="Sim" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{info.description}" />
+			</p:column>
+		</p:dataTable>
+		<p:spacer />
+				<p:dataTable var="info" value="#{v2.requestTokenOutput}" rowStyleClass="thm-background-white">
+			<f:facet name="header">Dados de resposta</f:facet>
+			<p:column headerText="Parâmetro" width="25%">
+				<h:outputText value="#{info.parameter}" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{info.description}" />
+			</p:column>
+		</p:dataTable>
+		<p:spacer />
+		<h:panelGrid columns="1">
+			<h:outputText value="Solicitação de dados do usuário" styleClass="h3" />
+			<p:spacer />
+			<h:outputText value="GET /resources/v2/userinfo/{secret_key}" />
+		</h:panelGrid>
+		<p:spacer />
+		<p:dataTable var="info" value="#{v2.requestUserinfoInput}" rowStyleClass="thm-background-white">
+			<f:facet name="header">Dados da solicitação</f:facet>
+			<p:column headerText="Parâmetro" width="25%">
+				<h:outputText value="#{info.parameter}" />
+			</p:column>
+			<p:column headerText="Local" width="15%">
+				<h:outputText value="#{info.local}" />
+			</p:column>
+			<p:column headerText="Obrigatório" width="10%">
+				<h:outputText value="Sim" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{info.description}" />
+			</p:column>
+		</p:dataTable>
+		<p:spacer />
+		<p:dataTable var="info" value="#{v2.requestUserinfoOutput}" rowStyleClass="thm-background-white">
+			<f:facet name="header">Dados de resposta</f:facet>
+			<p:column headerText="Parâmetro" width="25%">
+				<h:outputText value="#{info.parameter}" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{info.description}" />
+			</p:column>
+		</p:dataTable>
+		<p:spacer />
+		<h:panelGrid columns="1">
+			<h:outputText value="Solicitação de dados do usuário" styleClass="h3" />
+			<p:spacer />
+			<h:outputText value="GET /resources/v2/userinfo/{secret_key}/{token}" />
+		</h:panelGrid>
+		<p:spacer />
+		<p:dataTable var="info" value="#{v2.requestUserinfoInput2}" rowStyleClass="thm-background-white">
+			<f:facet name="header">Dados da solicitação</f:facet>
+			<p:column headerText="Parâmetro" width="25%">
+				<h:outputText value="#{info.parameter}" />
+			</p:column>
+			<p:column headerText="Local" width="15%">
+				<h:outputText value="#{info.local}" />
+			</p:column>
+			<p:column headerText="Obrigatório" width="10%">
+				<h:outputText value="Sim" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{info.description}" />
+			</p:column>
+		</p:dataTable>
+		<p:spacer />
+		<p:dataTable var="info" value="#{v2.requestUserinfoOutput}" rowStyleClass="thm-background-white">
+			<f:facet name="header">Dados de resposta</f:facet>
+			<p:column headerText="Parâmetro" width="25%">
+				<h:outputText value="#{info.parameter}" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{info.description}" />
+			</p:column>
+		</p:dataTable>
+		<p:spacer />
+		<h:panelGrid columns="1">
+			<h:outputText value="Finalização de token" styleClass="h3" />
+			<p:spacer />
+			<h:outputText value="GET /oauth/v2/logoff?token={token}" />
+		</h:panelGrid>
+		<p:spacer />
+		<p:dataTable var="info" value="#{v2.requestLogoff}" rowStyleClass="thm-background-white">
+			<f:facet name="header">Dados da solicitação</f:facet>
+			<p:column headerText="Parâmetro" width="25%">
+				<h:outputText value="#{info.parameter}" />
+			</p:column>
+			<p:column headerText="Local" width="15%">
+				<h:outputText value="#{info.local}" />
+			</p:column>
+			<p:column headerText="Obrigatório" width="10%">
+				<h:outputText value="Sim" />
+			</p:column>
+			<p:column headerText="Descrição">
+				<h:outputText value="#{info.description}" />
+			</p:column>
+		</p:dataTable>
+		<p:spacer />
+		<p:panel header="API v1" toggleable="true" collapsed="true">
+			<h:panelGrid columns="1">
+				<h:outputText value="Solicitação de dados do usuário" styleClass="h3" />
+				<p:spacer />
+				<h:outputText value="POST /v1/ldap" />
+			</h:panelGrid>
+			<p:spacer />
+			<p:dataTable var="info" value="#{v1.requestDataInput}" rowStyleClass="thm-background-white">
+				<f:facet name="header">Dados da solicitação</f:facet>
+				<p:column headerText="Parâmetro" width="25%">
+					<h:outputText value="#{info.parameter}" />
+				</p:column>
+				<p:column headerText="Obrigatório" width="10%">
+					<h:outputText value="Sim" />
+				</p:column>
+				<p:column headerText="Descrição">
+					<h:outputText value="#{info.description}" />
+				</p:column>
+			</p:dataTable>
+			<p:spacer />
+			<p:dataTable var="info" value="#{v1.requestDataOutput}" rowStyleClass="thm-background-white">
+				<f:facet name="header">Dados de resposta</f:facet>
+				<p:column headerText="Parâmetro" width="25%">
+					<h:outputText value="#{info.parameter}" />
+				</p:column>
+				<p:column headerText="Descrição">
+					<h:outputText value="#{info.description}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+</ui:composition>

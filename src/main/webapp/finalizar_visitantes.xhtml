@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Finalizar Visitantes</ui:define>
+	<ui:define name="description">Gerencia a finalização dos usuários visitantes</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Finalizar visitantes" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{finalizar.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.hasPerfil('DEV')}">
+			<p:dataTable var="u" value="#{finalizarVisitantes.visitantes}" paginator="true" rows="20" paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" currentPageReportTemplate="Filtrados: {totalRecords} | Página {currentPage} de {totalPages}" rowsPerPageTemplate="10,20" emptyMessage="Nenhum registro encontrado.">
+				<f:facet name="header">
+					<h:outputText value="Visitantes não finalizados" />
+				</f:facet>
+				<p:column headerText="Nome" filterBy="#{u.nome}" filterMatchMode="contains">
+					<h:outputText value="#{u.nome}" />
+				</p:column>
+				<p:column headerText="OM" filterBy="#{u.om}" filterMatchMode="contains">
+					<h:outputText value="#{u.om}" />
+				</p:column>
+				<p:column headerText="Nome completo" filterBy="#{u.nomeCompleto}" filterMatchMode="contains">
+					<h:outputText value="#{u.nomeCompleto}" />
+				</p:column>
+				<p:column headerText="CPF" filterBy="#{u.cpf}" filterMatchMode="contains">
+					<h:outputText value="#{u.cpf}" converter="cpf" />
+				</p:column>
+				<p:column style="width: 50px; text-align: right;">
+					<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+					<p:commandButton action="#{finalizarVisitantes.finalizar}" icon="fa fa-close" title="Finalizar" update="@form" styleClass="btn-danger">
+						<f:setPropertyActionListener value="#{u}" target="#{finalizarVisitantes.finalizado}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<p:spacer />
+			<p:dataTable var="u" value="#{sessao.usuario.usuariosFinalizados}" paginator="true" rows="20" paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" currentPageReportTemplate="({currentPage} de {totalPages})" rowsPerPageTemplate="10,20" emptyMessage="Nenhum registro encontrado.">
+				<f:facet name="header">
+					<h:outputText value="Usuários finalizados" />
+				</f:facet>
+				<p:column headerText="Nome">
+					<h:outputText value="#{u.nome}" />
+				</p:column>
+				<p:column headerText="OM">
+					<h:outputText value="#{u.om}" />
+				</p:column>
+				<p:column headerText="CPF">
+					<h:outputText value="#{u.cpf}" converter="cpf" />
+				</p:column>
+				<p:column headerText="Data da moderação">
+					<h:outputText value="#{u.dataInsercao}">
+						<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Data da finalização">
+					<h:outputText value="#{u.dataRemocao}">
+						<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+					</h:outputText>
+				</p:column>
+				<f:facet name="footer">Total: #{fn:length(sessao.usuario.usuariosFinalizados)}</f:facet>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Atualizar Usuários</ui:define>
+	<ui:define name="description">Atualiza os dados dos usuários</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Atualizar usuários" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{atualizarUsuarios.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.hasPerfil('DEV')}">
+			<p:toolbar>
+				<f:facet name="right">
+					<p:commandButton action="#{atualizarUsuarios.atualizarTodos}" icon="fa fa-refresh" title="Atualizar todos" value="Atualizar todos" update="@form" styleClass="btn-danger btn-block" />
+				</f:facet>
+			</p:toolbar>
+			<p:spacer />
+			<p:dataTable var="u" value="#{finalizar.usuarios}" paginator="true" rows="20" paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" currentPageReportTemplate="Filtrados: {totalRecords} | Página {currentPage} de {totalPages}" rowsPerPageTemplate="10,20" emptyMessage="Nenhum registro encontrado.">
+				<f:facet name="header">
+					<h:outputText value="Usuários não finalizados" />
+				</f:facet>
+				<p:column headerText="Nome" filterBy="#{u.nome}" filterMatchMode="contains">
+					<h:outputText value="#{u.nome}" />
+				</p:column>
+				<p:column headerText="OM" filterBy="#{u.om}" filterMatchMode="contains">
+					<h:outputText value="#{u.om}" />
+				</p:column>
+				<p:column headerText="Nome completo" filterBy="#{u.nomeCompleto}" filterMatchMode="contains">
+					<h:outputText value="#{u.nomeCompleto}" />
+				</p:column>
+				<p:column headerText="CPF" filterBy="#{u.cpf}" filterMatchMode="contains">
+					<h:outputText value="#{u.cpf}" converter="cpf" />
+				</p:column>
+				<p:column style="width: 50px; text-align: right;">
+					<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+					<p:commandButton action="#{atualizarUsuarios.atualizar}" icon="fa fa-refresh" title="Atualizar" update="@form" styleClass="btn-warning">
+						<f:setPropertyActionListener value="#{u}" target="#{atualizarUsuarios.atualizado}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

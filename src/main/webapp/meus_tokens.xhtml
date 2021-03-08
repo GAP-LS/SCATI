@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Aplicações Conectadas</ui:define>
+	<ui:define name="description">Finaliza tokens de acesso de aplicações conectadas</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Aplicações conectadas" />
+		<h:form>
+			<p:dataTable var="t" value="#{sessao.usuario.tokens}" emptyMessage="Nenhum registro encontrado.">
+				<f:facet name="header">
+					<h:outputText value="Aplicações conectadas" />
+				</f:facet>
+				<p:column headerText="Aplicação">
+					<h:outputText value="#{t.aplicacao.nome}" />
+				</p:column>
+				<p:column headerText="Sigla">
+					<h:outputText value="#{t.aplicacao.sigla}" />
+				</p:column>
+				<p:column headerText="Data de criação">
+					<h:outputText value="#{t.dataCriacao}">
+						<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column style="width: 50px; text-align: right;">
+					<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+					<p:commandButton action="#{meusTokens.finalizar}" icon="fa fa-thumbs-down" title="Finalizar token" update="@form" styleClass="btn-warning">
+						<f:setPropertyActionListener value="#{t}" target="#{meusTokens.token}" />
+					</p:commandButton>
+				</p:column>
+				<f:facet name="footer">Total: #{fn:length(sessao.usuario.tokens)}</f:facet>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

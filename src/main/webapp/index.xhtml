@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Meus Dados</ui:define>
+	<ui:define name="description">Mostra os dados cadastrais do usuário atual</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Meus dados" />
+		<h:form>
+			<div class="ui-fluid">
+				<p:panel header="Informações do usuário">
+					<p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel value="CPF:" />
+						<h:outputText value="#{sessao.usuario.cpf}" converter="cpf" />
+						<p:outputLabel value="SARAM:" />
+						<h:outputText value="#{sessao.usuario.saram}" converter="saram" />
+						<p:outputLabel value="Nome Completo:" />
+						<h:outputText value="#{sessao.usuario.nomeCompleto}" converter="nomeCompleto" />
+						<p:outputLabel value="Nome de Guerra:" />
+						<h:outputText value="#{sessao.usuario.nome}" />
+						<p:outputLabel value="OM:" />
+						<h:outputText value="#{sessao.usuario.om}" />
+						<p:outputLabel value="ZIMBRA:" />
+						<h:outputText value="#{sessao.usuario.zimbra}" />
+						<p:outputLabel value="Internet:" />
+						<p:rating value="#{index.loginUnicoUsuario.nivelInternet}" stars="#{index.loginUnicoUsuario.nivelInternet}" readonly="true" />
+						<p:outputLabel value="Email:" />
+						<h:outputText value="#{index.loginUnicoUsuario.emailRecuperacao}" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-6,ui-g-12 ui-md-6" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{index.loginUnicoUsuario.status}" onLabel="Conta ativa" offLabel="Conta desativada" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{index.loginUnicoUsuario.termoAssinado}" onLabel="Termo assinado" offLabel="Termo não assinado" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{!index.loginUnicoUsuario.contaExpirada}" onLabel="Conta não expirada" offLabel="Conta expirada" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{index.loginUnicoUsuario.emailLiberado}" onLabel="Possui email funcional" offLabel="Não possui email funcional" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{index.loginUnicoUsuario.internetLiberada}" onLabel="Tem acesso a internet" offLabel="Sem acesso a internet" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+						<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{index.loginUnicoUsuario.vpn}" onLabel="Tem acesso via VPN" offLabel="Sem acesso via VPN" onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="true" />
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:panel header="Informações da conta">
+					<p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel value="Moderador:" />
+						<h:outputText value="#{sessao.usuario.moderador}" />
+						<p:outputLabel value="Data da moderação:" />
+						<h:outputText value="#{sessao.usuario.dataInsercao}">
+							<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+						</h:outputText>
+						<p:outputLabel value="Login de Rede:" />
+						<h:outputText value="#{index.loginLocalUsuario.login}" />
+						<p:outputLabel value="PIN para impressão:" />
+						<h:outputText id="pin" value="#{index.loginLocalUsuario.pin}" converter="pin" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-6,ui-g-12 ui-md-6" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:commandButton value="Resetar senha de rede" action="#{index.gerarSenha}" />
+						<p:commandButton value="Gerar novo PIN" action="#{index.gerarPin}" update="pin" />
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:panel header="Perfis" toggleable="true" collapsed="true" rendered="#{not empty sessao.usuario.perfils}">
+					<p:panelGrid columns="3" columnClasses="ui-g-12 ui-lg-4,ui-g-12 ui-lg-4,ui-g-12 ui-lg-4" layout="grid" styleClass="ui-panelgrid-blank">
+						<c:forEach items="#{sessao.usuario.perfils}" var="p">
+							<p:selectBooleanButton style="cursor: auto !important" styleClass="thm-opaco" value="#{true}" onLabel="#{p.codigo} - #{p.titulo}" onIcon="pi pi-check" disabled="true" />
+						</c:forEach>
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

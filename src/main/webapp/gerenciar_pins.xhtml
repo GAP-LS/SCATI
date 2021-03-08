@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Definir PIN</ui:define>
+	<ui:define name="description">Define o PIN dos usuários</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Definir PIN" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{pin.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.hasPerfil('GPI DEV')}">
+			<div class="ui-fluid">
+				<p:panel header="Selecionar usuário">
+					<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:selectOneMenu value="#{pin.usuario}" converter="omnifaces.SelectItemsIndexConverter" filter="true" filterMatchMode="contains">
+							<f:selectItems var="u" value="#{pin.usuarios}" itemDisabled="#{not u.habilitado}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:panel header="Gerenciamento de PIN">
+					<p:panelGrid columns="5" columnClasses="ui-g-12 ui-md-1,ui-g-12 ui-md-5,ui-g-12 ui-md-2,ui-g-12 ui-md-1,ui-g-12 ui-md-3" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="pin" value="PIN:" />
+						<p:inputText id="pin" value="#{pin.pin}" required="true">
+							<p:keyFilter regEx="/[0-9]/" />
+						</p:inputText>
+						<p:commandButton value="Definir PIN" action="#{pin.definirPin}" />
+						<h:outputText value="" />
+						<p:commandButton value="Gerar PIN Aleatório" icon="fa fa-random" action="#{pin.gerarPin}" />
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

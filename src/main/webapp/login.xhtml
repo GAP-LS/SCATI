@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<ui:include src="/WEB-INF/template/head.xhtml" />
+</h:head>
+<h:body styleClass="thm-background-fab">
+	<p:growl id="message" showSummary="true" showDetail="true" />
+	<p:idleMonitor timeout="300000">
+		<p:ajax event="idle" listener="#{sessao.idle}" />
+	</p:idleMonitor>
+	<p:spacer />
+	<div class="ui-g">
+		<div class="ui-g-4">&nbsp;</div>
+		<div class="ui-g-4">
+			<div class="ui-fluid ">
+				<h:form>
+					<p:panel header="Portal Local" styleClass="thm-h1">
+						<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank text-center">
+							<p:graphicImage library="images" name="gapls.png" />
+							<h:outputText value="Utilize os dados do Portal do Militar" styleClass="thm-h3" />
+						</p:panelGrid>
+						<p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-9" layout="grid" styleClass="ui-panelgrid-blank">
+							<p:outputLabel for="username" value="CPF:" />
+							<p:inputMask id="username" placeholder="Digite seu CPF" value="#{login.username}" required="true" requiredMessage="O CPF é obrigatório" mask="999.999.999-99" converter="cpf" />
+							<p:outputLabel for="password" value="Senha:" />
+							<p:password id="password" placeholder="Digite sua senha" value="#{login.password}" required="true" requiredMessage="A senha é obrigatória" />
+						</p:panelGrid>
+						<p:focus for="username" />
+						<p:commandButton value="Acessar" action="#{login.logon}" update="message">
+							<f:param name="redir" value="#{param['redir']}" />
+						</p:commandButton>
+					</p:panel>
+				</h:form>
+				<p:spacer />
+				<p:panel>
+					<p:panelGrid columns="2" columnClasses="ui-g-6 45-g-6" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:button value="Cadastrar" href="cadastrar.xhtml" disabled="#{app.opcao.modoManutencao}" />
+						<p:button value="Esqueci minha senha" href="http://servicos.ccarj.intraer/password" />
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</div>
+		<div class="ui-g-4">&nbsp;</div>
+	</div>
+</h:body>
+</html>

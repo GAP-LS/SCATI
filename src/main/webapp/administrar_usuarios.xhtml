@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Administrar Usuários</ui:define>
+	<ui:define name="description">Administra os perfis dos usuários</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Administrar usuários" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{administrarUsuarios.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.hasPerfil('AUS DEV')}">
+			<p:panel header="Selecionar usuário">
+				<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank">
+					<p:selectOneMenu value="#{administrarUsuarios.usuario}" converter="omnifaces.SelectItemsIndexConverter" filter="true" filterMatchMode="contains">
+						<f:selectItems var="u" value="#{administrarUsuarios.usuariosAtivos}" />
+						<p:ajax event="itemSelect" update="listaAplicacoes,administrar" listener="#{administrarUsuarios.primeiraAplicacao}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+			</p:panel>
+			<p:spacer />
+			<p:panel id="listaAplicacoes" header="Selecionar aplicação">
+				<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank">
+					<p:selectOneMenu value="#{administrarUsuarios.aplicacao}" converter="omnifaces.SelectItemsIndexConverter" filter="true" filterMatchMode="contains">
+						<f:selectItems var="u" value="#{administrarUsuarios.aplicacaos}" />
+						<p:ajax event="itemSelect" update="administrar" listener="#{administrarUsuarios.mudarOpcoes}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+			</p:panel>
+			<p:spacer />
+			<p:panel id="administrar" header="Perfis do usuário">
+				<p:panelGrid columns="1" columnClasses="ui-g-12" layout="grid" styleClass="ui-panelgrid-blank">
+					<p:pickList value="#{administrarUsuarios.perfis}" var="perfil" itemLabel="#{perfil}" itemValue="#{perfil}" itemDisabled="#{perfil.codigo.equals('DEV') and not sessao.usuario.hasPerfil('DEV')}" converter="perfil" responsive="true">
+						<f:facet name="sourceCaption">Perfis disponíveis</f:facet>
+						<f:facet name="targetCaption">Perfis do usuário</f:facet>
+						<p:column style="width: 20%;">
+							<h:outputText value="#{perfil.codigo}" />
+						</p:column>
+						<p:column style="width: 70%;">
+							<h:outputText value="#{perfil.titulo}" />
+						</p:column>
+						<p:column style="width: 10%;">
+							<p:tooltip position="top" showEffect="fade" hideEffect="fade" />
+							<p:button icon="fa fa-info" title="#{perfil.descricao}" onclick="return false;" />
+						</p:column>
+					</p:pickList>
+					<p:commandButton value="Salvar perfis" action="#{administrarUsuarios.salvar}" styleClass="btn-primary btn-block"/>
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

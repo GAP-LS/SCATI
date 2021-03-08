@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:jsf="http://xmlns.jcp.org/jsf"
+				template="#{layoutMB.template}">
+
+	<ui:define name="head">
+		<ui:include src="/WEB-INF/template/head.xhtml" />
+	</ui:define>
+
+	<ui:define name="logo-lg">
+		<i class="fa fa-user-circle" />
+		<span>#{app.name}</span>
+	</ui:define>
+
+	<ui:define name="logo-mini">
+		<i class="fa fa-user-circle" />
+	</ui:define>
+	
+	<ui:define name="body-begin">
+		<div id="divManutencao" class="alert alert-danger" style="border-radius: 0; margin-bottom: 0; text-align: center;" jsf:rendered="#{sessao.usuario.hasPerfil('DEV') and app.opcao.modoManutencao}">Modo Manutenção!</div>
+		<div class="alert alert-warning" style="border-radius: 0; margin-bottom: 0; text-align: center;" jsf:rendered="#{sessao.usuario.hasPerfil('DEV') and app.opcao.modoSenhaMestra}">Modo Senha Mestra!</div>
+	</ui:define>
+
+	<ui:define name="menu">
+		<ui:include src="/WEB-INF/template/sidebar.xhtml" />
+	</ui:define>
+
+	<ui:define name="top-menu">
+		<ui:include src="/WEB-INF/template/toolbar.xhtml" />
+	</ui:define>
+
+	<ui:define name="footer">
+		<a>Copyright (C) 2019 - #{app.title} - Desenvolvido por 2S Suchorski [GAP-LS]</a>
+		<div class="pull-right hidden-xs" style="color: gray">
+			<i>#{app.name} - #{app.version}</i>
+		</div>
+		<p:idleMonitor timeout="1800000">
+			<p:ajax event="idle" listener="#{sessao.idle}" />
+		</p:idleMonitor>
+	</ui:define>
+
+</ui:composition>

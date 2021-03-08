@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				xmlns:pe="http://primefaces.org/ui/extensions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Minhas Aplicações</ui:define>
+	<ui:define name="description">Gerencia as aplicações via OAUTH do usuário atual</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Minhas aplicações" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{aplicacoes.grantAccess}" />
+		</f:metadata>
+		<p:growl id="growl" />
+		<h:form id="aplicacoes" rendered="#{sessao.usuario.hasPerfil('GAP DEV')}">
+			<div class="ui-fluid">
+				<p:toolbar>
+					<f:facet name="left">
+						<p:commandButton icon="fa fa-plus" value="Adicionar aplicação" type="button" onclick="PF('dlgAddApp').show()" styleClass="btn-primary btn-block" />
+					</f:facet>
+					<f:facet name="right">
+						<p:button icon="fa fa-question" value="Informativo API" type="button" href="informativo_api.xhtml" styleClass="btn-primary btn-block" />
+					</f:facet>
+				</p:toolbar>
+				<p:spacer />
+				<p:dataTable var="aplicacao" value="#{sessao.usuario.aplicacaos}" emptyMessage="Nenhum registro encontrado.">
+					<f:facet name="header">
+						<h:outputText value="Aplicações" />
+					</f:facet>
+					<p:column headerText="Nome">
+						<h:outputText value="#{aplicacao.nome}" />
+					</p:column>
+					<p:column headerText="Sigla" width="10%">
+						<h:outputText value="#{aplicacao.sigla}" />
+					</p:column>
+					<p:column headerText="Perfis" width="10%">
+						<h:outputText value="#{fn:length(aplicacao.perfils)}" />
+					</p:column>
+					<p:column headerText="Usuários" width="10%">
+						<h:outputText value="#{fn:length(aplicacao.tokens)}" />
+					</p:column>
+					<p:column headerText="Data da criação" width="20%">
+						<h:outputText value="#{aplicacao.dataCriacao}"><f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" /></h:outputText>
+					</p:column>
+					<p:column style="width: 250px; text-align: right;">
+						<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+						<p:commandButton icon="fa fa-plus" title="Adicionar perfil" onsuccess="PF('dlgAddRole').show();" update=":frmAddRole:pgAddRole" styleClass="btn-secondary" style="width: 40px;">
+							<f:setPropertyActionListener value="#{aplicacao}" target="#{aplicacoes.aplicacao}" />
+						</p:commandButton>
+						<p:commandButton icon="fa fa-list" title="Listar perfis" onsuccess="PF('dlgListRole').show();" update=":frmListRoles:dtListRole" styleClass="btn-info" style="width: 40px;">
+							<f:setPropertyActionListener value="#{aplicacao}" target="#{aplicacoes.aplicacao}" />
+						</p:commandButton>
+						<p:button id="chavePublica" icon="fa fa-globe" title="Copiar chave pública" style="width: 40px;" styleClass="btn-success" />
+						<pe:clipboard trigger="chavePublica" action="copy" text="#{aplicacao.chavePublica}" />
+						<p:button id="chavePrivada" icon="fa fa-lock" title="Copiar chave privada" style="width: 40px;" styleClass="btn-warning" />
+						<pe:clipboard trigger="chavePrivada" action="copy" text="#{aplicacao.chaveSecreta}" />
+						<p:commandButton action="#{aplicacoes.excluirAplicacao}" icon="fa fa-trash" title="Excluir" update="@form" styleClass="btn-danger" style="width: 40px;">
+							<f:setPropertyActionListener value="#{aplicacao}" target="#{aplicacoes.aplicacao}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</div>
+		</h:form>
+		<h:form>
+			<p:dialog widgetVar="dlgAddApp" modal="true" closable="true" resizable="false" showHeader="true" showEffect="fade" hideEffect="fade" closeOnEscape="true">
+				<f:facet name="header">Adicionar aplicação</f:facet>
+				<div class="ui-fluid">
+					<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-4,ui-g-8">
+						<h:outputLabel for="nome" value="Nome:" />
+						<p:inputText id="nome" value="#{aplicacoes.nome}" required="true" label="Nome">
+							<f:validateLength minimum="2" maximum="128" />
+						</p:inputText>
+						<h:outputLabel for="sigla" value="Sigla:" />
+						<p:inputText id="sigla" value="#{aplicacoes.sigla}" required="true" label="Sigla">
+							<f:validateLength minimum="2" maximum="32" />
+						</p:inputText>
+					</p:panelGrid>
+				</div>
+				<f:facet name="footer">
+					<p:commandButton value="Adicionar aplicação" action="#{aplicacoes.adicionarAplicacao}" styleClass="btn-primary btn-block" update="nome,sigla,aplicacoes,growl" oncomplete="if(!args.validationFailed){PF('dlgAddApp').hide();}" />
+				</f:facet>
+			</p:dialog>	
+		</h:form>
+		<h:form id="frmAddRole">
+			<p:dialog widgetVar="dlgAddRole" modal="true" closable="true" resizable="false" showHeader="true" showEffect="fade" hideEffect="fade" closeOnEscape="true" width="40%">
+				<f:facet name="header">Adicionar perfil</f:facet>
+					<p:panelGrid id="pgAddRole" layout="grid" columns="2" columnClasses="ui-g-4,ui-g-8">
+						<h:outputLabel for="aplicacao" value="Aplicação:" />
+						<p:selectOneMenu id="aplicacao" value="#{aplicacoes.aplicacao}" converter="omnifaces.SelectItemsIndexConverter" filter="true" filterMatchMode="contains">
+							<f:selectItems var="u" value="#{sessao.usuario.aplicacaos}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="codigo" value="Código:" />
+						<p:inputText id="codigo" value="#{aplicacoes.codigo}" required="true" label="Código">
+							<f:validateLength minimum="3" maximum="3" />
+						</p:inputText>
+						<h:outputLabel for="titulo" value="Título:" />
+						<p:inputText id="titulo" value="#{aplicacoes.titulo}" required="true" label="Título">
+							<f:validateLength minimum="2" maximum="64" />
+						</p:inputText>
+						<h:outputLabel for="descricao" value="Descrição:" />
+						<p:inputText id="descricao" value="#{aplicacoes.descricao}" required="true" label="Descrição">
+							<f:validateLength minimum="2" maximum="256" />
+						</p:inputText>
+					</p:panelGrid>
+				<f:facet name="footer">
+					<p:commandButton value="Adicionar perfil" action="#{aplicacoes.adicionarPerfil}" styleClass="btn-primary btn-block" update="codigo,titulo,descricao,aplicacoes,growl" oncomplete="if(!args.validationFailed){PF('dlgAddRole').hide();}" />
+				</f:facet>
+			</p:dialog>	
+		</h:form>
+		<h:form id="frmListRoles">
+			<p:dialog widgetVar="dlgListRole" modal="true" closable="true" resizable="false" showHeader="true" showEffect="fade" hideEffect="fade" closeOnEscape="true" width="40%">
+				<f:facet name="header">Lista de perfis</f:facet>
+				<p:dataTable id="dtListRole" var="perfil" value="#{aplicacoes.aplicacao.perfils}" emptyMessage="Nenhum registro encontrado.">
+					<p:column headerText="Código">
+						<h:outputText value="#{perfil.codigo}" />
+					</p:column>
+					<p:column headerText="Título">
+						<h:outputText value="#{perfil.titulo}" />
+					</p:column>
+					<p:column style="width: 60px; text-align: right;">
+						<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+						<p:commandButton action="#{aplicacoes.removerPerfil}" icon="fa fa-trash" title="Excluir" update="aplicacoes" oncomplete="PF('dlgListRole').hide();" styleClass="btn-danger" style="width: 40px;">
+							<f:setPropertyActionListener value="#{perfil}" target="#{aplicacoes.perfil}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:dialog>	
+		</h:form>
+	</ui:define>
+
+</ui:composition>

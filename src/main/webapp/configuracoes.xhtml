@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Configurações</ui:define>
+	<ui:define name="description">Altera as configurações do sistema</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Configurações" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{configuracoes.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.hasPerfil('ASC DEV')}">
+			<div class="ui-fluid">
+				<p:panel header="Configurações do Sistema">
+					<p:panelGrid columns="2" columnClasses="ui-g-2,ui-g-10" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="oms" value="OMs: " />
+						<p:chips id="oms" value="#{app.opcao.listOmsApoiadas}" required="true" />
+					</p:panelGrid>
+					<p:panelGrid columns="3" columnClasses="ui-g-12 ui-md-6,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:selectBooleanButton value="#{app.opcao.modoSenhaMestra}" onLabel="Senha mestra habilitada" offLabel="Senha mestra desabilitada" onIcon="ui-icon-check" offIcon="ui-icon-close" />
+						<p:outputLabel for="senhaMestra" value="Senha mestra:" />
+						<p:password id="senhaMestra" value="#{app.opcao.senhaMestra}" redisplay="true" feedback="true" required="true" requiredMessage="O campo precisa ser preenchido" />
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:panel header="Configurações do AD">
+					<p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="adDominio" value="Domínio:" />
+						<p:inputText id="adDominio" value="#{app.opcao.adDominio}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adAtributoName" value="Atributo do Nome:" />
+						<p:inputText id="adAtributoName" value="#{app.opcao.adAtributoName}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adAtributoLogin" value="Atributo do Login:" />
+						<p:inputText id="adAtributoLogin" value="#{app.opcao.adAtributoLogin}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adAtributoLoginMail" value="Atributo do Login Mail:" />
+						<p:inputText id="adAtributoLoginMail" value="#{app.opcao.adAtributoLoginMail}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adAtributoCpf" value="Atributo do CPF:" />
+						<p:inputText id="adAtributoCpf" value="#{app.opcao.adAtributoCpf}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adAtributoSaram" value="Atributo do SARAM:" />
+						<p:inputText id="adAtributoSaram" value="#{app.opcao.adAtributoSaram}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adAtributoPin" value="Atributo do PIN:" />
+						<p:inputText id="adAtributoPin" value="#{app.opcao.adAtributoPin}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adTamanhoPin" value="Tamanho do PIN:" />
+						<p:spinner id="adTamanhoPin" value="#{app.opcao.adTamanhoPin}" min="3" max="10" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adOuUsuarios" value="OU de Usuários:" />
+						<p:inputText id="adOuUsuarios" value="#{app.opcao.adOuUsuarios}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="adOuVisitantes" value="OU de Visitantes:" />
+						<p:inputText id="adOuVisitantes" value="#{app.opcao.adOuVisitantes}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="luMaximoBusca" value="Busca máxima:" />
+						<p:spinner id="luMaximoBusca" value="#{app.opcao.maximoBusca}" min="2" max="10000" required="true" requiredMessage="O campo precisa ser preenchido" />
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:panel header="Configurações de E-mail">
+					<p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="mReplyto" value="Responder para:" />
+						<p:inputText id="mReplyto" value="#{app.opcao.MReplyto}" required="true" requiredMessage="O campo precisa ser preenchido" />
+						<p:outputLabel for="mAssinatura" value="Assinatura:" />
+						<p:inputText id="mAssinatura" value="#{app.opcao.MAssinatura}" required="true" requiredMessage="O campo precisa ser preenchido" />
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer />
+				<p:commandButton value="Salvar configuração" action="#{configuracoes.salvar}" styleClass="btn-primary" />
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

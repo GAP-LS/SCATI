@@ -1,0 +1,21 @@
+@charset "ISO-8859-1";
+
+/* Text alignment */
+.text-center { text-align: center; }
+.text-justify { text-align: justify; }
+
+/* Text Colors */
+.text-white { color: #ffffff; }
+
+/* Theme */
+body { margin: 0; }
+.thm-footer { background-color: #007ad9; color: #ffffff; }
+.thm-background-fab { background: url("#{resource['images/fundo.jpg']}") no-repeat fixed #173d54; background-size: 100%; }
+.thm-background-white { background-color: white }
+.thm-opaco { opacity: 1.0 !important; }
+.thm-h1 { font-size: 2em !important; }
+.thm-h2 { font-size: 1.5em !important; font-weight: bold; }
+.thm-h3 { font-size: 1em !important; }
+
+/* PrimeFaces Theme */
+.ui-selectonemenu-filter-container { width: 100% !important; }

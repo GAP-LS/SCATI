@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Migrar Usuários</ui:define>
+	<ui:define name="description">Migra os usuários para o sistema</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Moderar usuários" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{migrar.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.hasPerfil('DEV')}">
+			<p:dataTable var="u" value="#{migrar.usuarios}" rowsPerPageTemplate="20,1000" emptyMessage="Nenhum registro encontrado.">
+				<f:facet name="header">
+					<h:outputText value="Usuários a serem migrados" />
+				</f:facet>
+				<p:column headerText="Nome completo" filterBy="#{u.nomeCompleto}" filterMatchMode="contains">
+					<h:outputText value="#{u.nomeCompleto}" />
+				</p:column>
+				<p:column headerText="Nome de exibição" filterBy="#{u.nomeExibicao}" filterMatchMode="contains">
+					<h:outputText value="#{u.cn}" />
+				</p:column>
+				<p:column headerText="CPF" filterBy="#{u.cpf}" filterMatchMode="contains">
+					<h:outputText value="#{u.cpf}" converter="cpf" />
+				</p:column>
+				<p:column style="width: 50px; text-align: right;">
+					<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+					<p:commandButton action="#{migrar.migrar}" icon="fa fa-arrow-left" title="Migrar usuário" update="@form" styleClass="btn-warning">
+						<f:setPropertyActionListener value="#{u}" target="#{migrar.usuario}" />
+					</p:commandButton>
+				</p:column>
+				<f:facet name="footer">Total: #{fn:length(migrar.usuarios)}</f:facet>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

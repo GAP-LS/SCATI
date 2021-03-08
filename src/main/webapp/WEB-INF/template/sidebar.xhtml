@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<h:body>
+	<ui:composition>
+		<ul class="sidebar-menu sidebar-collapse">
+			<li class="header">Meu Acesso</li>
+			<li>
+				<p:link outcome="index">
+					<i class="fa fa-home"></i>
+					<span>Meus Dados</span>
+				</p:link>
+			</li>
+			<li>
+				<p:link outcome="minhas_cautelas">
+					<i class="fa fa-file-text-o"></i>
+					<span>Minhas Cautelas</span>
+				</p:link>
+			</li>
+			<li>
+				<p:link outcome="meus_tokens">
+					<i class="fa fa-certificate"></i>
+					<span>Aplicações Conectadas</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.podeModerar or sessao.usuario.hasPerfil('DEV')}">
+				<p:link outcome="meus_visitantes">
+					<i class="fa fa-male"></i>
+					<span>Meus Visitantes</span>
+				</p:link>
+			</li>
+			<li class="header" jsf:rendered="#{sessao.usuario.hasPerfil('GPI DEV')}">Gerenciamento de PIN</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('GPI DEV')}">
+				<p:link outcome="gerenciar_pins">
+					<i class="fa fa-print"></i>
+					<span>Definir PIN</span>
+				</p:link>
+			</li>
+			<li class="header" jsf:rendered="#{sessao.usuario.hasPerfil('CUC GCP GCR DEV')}">Gerenciamento de Cautelas</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('CUC DEV')}">
+				<p:link outcome="consultar_cautelas">
+					<i class="fa fa-files-o"></i>
+					<span>Consultar Cautelas</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('GCP DEV')}">
+				<p:link outcome="registrar_cautela">
+					<i class="fa fa-paste"></i>
+					<span>Registrar Cautela</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('GCR DEV')}">
+				<p:link outcome="receber_cautela">
+					<i class="fa fa-edit"></i>
+					<span>Receber Cautela</span>
+				</p:link>
+			</li>
+			<li class="header" jsf:rendered="#{sessao.usuario.hasPerfil('CUS AUF AUS DEV')}">Gerenciamento de Usuários</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('CUS DEV')}">
+				<p:link outcome="consultar_usuarios">
+					<i class="fa fa-search"></i>
+					<span>Consultar Usuários</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('CUS DEV')}">
+				<p:link outcome="aguardando_moderacao">
+					<i class="fa fa-clock-o"></i>
+					<span>Aguardando Moderação</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('DEV')}">
+				<p:link outcome="cadastrar_usuarios">
+					<i class="fa fa-user-plus"></i>
+					<span>Cadastrar Usuários</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.podeModerar or sessao.usuario.hasPerfil('DEV')}">
+				<p:link outcome="moderar_usuarios">
+					<i class="fa fa-user-plus"></i>
+					<span>Moderar Usuários</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('AUF AUS DEV')}">
+				<p:link outcome="finalizar_usuarios">
+					<i class="fa fa-user-times"></i>
+					<span>Finalizar Usuários</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('DEV')}">
+				<p:link outcome="finalizar_visitantes">
+					<i class="fa fa-user-times"></i>
+					<span>Finalizar Visitantes</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('AUS DEV')}">
+				<p:link outcome="administrar_usuarios">
+					<i class="fa fa-users"></i>
+					<span>Administrar Usuários</span>
+				</p:link>
+			</li>
+			<li class="header" jsf:rendered="#{not sessao.usuario.aplicacaosGerenciadas.isEmpty() or sessao.usuario.hasPerfil('GAP DEV')}">Gerenciamento de Aplicações</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('GAP DEV')}">
+				<p:link outcome="minhas_aplicacoes">
+					<i class="fa fa-microchip"></i>
+					<span>Minhas aplicações</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{not sessao.usuario.aplicacaos.isEmpty()}">
+				<p:link outcome="gerenciar_aplicacoes">
+					<i class="fa fa-handshake-o"></i>
+					<span>Gerenciar aplicações</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{not sessao.usuario.aplicacaosGerenciadas.isEmpty()}">
+				<p:link outcome="gerenciar_usuarios">
+					<i class="fa fa-unlock-alt"></i>
+					<span>Gerenciar usuários</span>
+				</p:link>
+			</li>
+			<li class="header" jsf:rendered="#{sessao.usuario.hasPerfil('ASC DEV')}">Gerenciamento do Servidor</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('ASC DEV')}">
+				<p:link outcome="configuracoes">
+					<i class="fa fa-gear"></i>
+					<span>Configurações</span>
+				</p:link>
+			</li>
+			<li class="header" jsf:rendered="#{sessao.usuario.hasPerfil('DEV')}">Área de Desenvolvimento</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('DEV')}">
+				<p:link outcome="atualizar_usuarios">
+					<i class="fa fa-refresh"></i>
+					<span>Atualizar usuários</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('DEV')}">
+				<p:link outcome="atualizar_visitantes">
+					<i class="fa fa-refresh"></i>
+					<span>Atualizar visitantes</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('DEV')}">
+				<p:link outcome="migrar_usuarios">
+					<i class="fa fa-arrow-left"></i>
+					<span>Migrar usuários</span>
+				</p:link>
+			</li>
+			<li jsf:rendered="#{sessao.usuario.hasPerfil('DEV')}">
+				<p:commandLink action="#{app.modoManutencao}" update="@this">
+					<i class="fa fa-wrench"></i>
+					<span jsf:rendered="#{not app.opcao.modoManutencao}">Ativar Modo Manutenção</span>
+					<span jsf:rendered="#{app.opcao.modoManutencao}" onclick="$('#divManutencao').hide();">Desativar Modo Manutenção</span>
+				</p:commandLink>
+			</li>
+		</ul>
+	</ui:composition>
+</h:body>
+</html>

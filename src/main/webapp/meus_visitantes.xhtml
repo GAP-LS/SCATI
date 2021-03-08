@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Meus Visitantes</ui:define>
+	<ui:define name="description">Gerencia visitantes em aberto para o usuário atual</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Meus visitantes" />
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{visitantes.grantAccess}" />
+		</f:metadata>
+		<h:form rendered="#{sessao.usuario.podeModerar or sessao.usuario.hasPerfil('DEV')}">
+			<p:dataTable var="u" value="#{sessao.usuario.visitantes}" paginator="true" rows="20" paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" currentPageReportTemplate="({currentPage} de {totalPages})" rowsPerPageTemplate="10,20" emptyMessage="Nenhum registro encontrado.">
+				<f:facet name="header">
+					<h:outputText value="Meus visitantes" />
+				</f:facet>
+				<p:column headerText="Nome de guerra">
+					<h:outputText value="#{u.nome}" />
+				</p:column>
+				<p:column headerText="Nome completo">
+					<h:outputText value="#{u.nomeCompleto}" converter="nomeCompleto" />
+				</p:column>
+				<p:column headerText="OM">
+					<h:outputText value="#{u.om}" />
+				</p:column>
+				<p:column headerText="CPF">
+					<h:outputText value="#{u.cpf}" converter="cpf" />
+				</p:column>
+				<p:column style="width: 50px; text-align: right;">
+					<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+					<p:commandButton action="#{visitantes.finalizar}" icon="fa fa-close" title="Finalizar" update="@form">
+						<f:setPropertyActionListener value="#{u}" target="#{visitantes.visitante}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
