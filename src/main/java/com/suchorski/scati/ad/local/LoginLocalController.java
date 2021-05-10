@@ -49,7 +49,7 @@ public class LoginLocalController {
 	private Session session;
 
 	/* Gambiarra */
-//	@Resource(lookup="java:global/ldap/pamals")
+//	@Resource(lookup="java:global/ldap/local")
 //	private InitialDirContext context;
 	private LdapContext context;
 
@@ -70,7 +70,7 @@ public class LoginLocalController {
 			env.put(Context.SECURITY_PRINCIPAL, System.getenv("SCATI_LDAP_USERNAME"));
 			env.put(Context.SECURITY_CREDENTIALS, System.getenv("SCATI_LDAP_PASSWORD"));
 			env.put("java.naming.ldap.factory.socket", "com.suchorski.scati.utils.MySSLSocketFactory");
-			context  = new InitialLdapContext(env, null);
+			context = new InitialLdapContext(env, null);
 		} catch (NamingException e) {
 			throw new RuntimeException(e);
 		}
