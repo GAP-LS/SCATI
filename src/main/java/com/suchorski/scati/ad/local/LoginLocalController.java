@@ -328,7 +328,7 @@ public class LoginLocalController {
 
 	private synchronized String generateUsername(String username) throws NamingException {
 		int count = 0;
-		String temp = username;
+		String temp = username.replaceFirst("tp\\.", "").substring(0, 15);
 		while (hasValue(app.getOpcao().getAdAtributoLogin(), temp)) {
 			temp = String.format("%s%d", username, ++count);
 		}
