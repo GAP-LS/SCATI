@@ -144,7 +144,7 @@ public class LoginLocalController {
 		context.createSubcontext(login, attrs);
 		sendMail(loginUnicoUsuario.getZimbra(), "Criação de usuário",
 				"Usuário criado com sucesso!\r\n\r\n"
-						+ "Seu usuário de rede é: " + loginUnicoUsuario.getLogin() + "\r\n"
+						+ "Seu usuário de rede é: " + username + "\r\n"
 						+ "Sua senha de rede é: " + senha.getSenha() + "\r\n"
 						+ "Seu PIN para utilizar a impressora é: " + pin
 				);
