@@ -21,6 +21,10 @@ import com.suchorski.scati.exceptions.ApplicationException;
 import com.suchorski.scati.generics.AccessNeededController;
 import com.suchorski.scati.models.Usuario;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
+import kong.unirest.json.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,12 +32,14 @@ import lombok.Setter;
 @ViewScoped
 public class ConsultarUsuariosController implements AccessNeededController, Serializable {
 	
-	private static final long serialVersionUID = 4447780319790878501L;
+	private static final long serialVersionUID = -4111864819061762864L;
 
 	@Inject private SessaoController sessao;
 	@Inject private LoginUnicoController loginUnico;
 	
 	private UsuarioDAO usuarioDAO;
+	
+	@Getter private String photoData;
 	
 	@Getter @Setter private String value;
 	@Getter @Setter private String type;
@@ -63,22 +69,23 @@ public class ConsultarUsuariosController implements AccessNeededController, Seri
 			switch (type) {
 			case "nid":
 				loginUnicoUsuario = loginUnico.findByCpfOrSaram(value);
+				historicoCadastros = usuarioDAO.listaHistorico(value);
 				usuario = usuarioDAO.findByCpf(value);
 				break;
 			case "nguerra":
 				encontrados = loginUnico.listaUsuarios("FABguerra", value, "om".equals(local));
 				if (encontrados.size() == 1) {
 					loginUnicoUsuario = encontrados.get(0);
+					historicoCadastros = usuarioDAO.listaHistorico(loginUnicoUsuario.getCpf());
 					usuario = usuarioDAO.findByCpf(loginUnicoUsuario.getCpf());
-					historicoCadastros = usuarioDAO.listaHistorico(usuario);
 				}
 				break;
 			case "ncompleto":
 				encontrados = loginUnico.listaUsuarios("cn", value, "om".equals(local));
 				if (encontrados.size() == 1) {
 					loginUnicoUsuario = encontrados.get(0);
+					historicoCadastros = usuarioDAO.listaHistorico(loginUnicoUsuario.getCpf());
 					usuario = usuarioDAO.findByCpf(loginUnicoUsuario.getCpf());
-					historicoCadastros = usuarioDAO.listaHistorico(usuario);
 				}
 				break;
 			}
@@ -93,6 +100,7 @@ public class ConsultarUsuariosController implements AccessNeededController, Seri
 		try {
 			encontrados = null;
 			loginUnicoUsuario = loginUnico.findByCpfOrSaram(value);
+			historicoCadastros = usuarioDAO.listaHistorico(value);
 			usuario = usuarioDAO.findByCpf(value);
 		} catch (ApplicationException e) {
 			Messages.create("Aviso!").warn().detail(e.getLocalizedMessage()).add();
@@ -104,6 +112,15 @@ public class ConsultarUsuariosController implements AccessNeededController, Seri
 	@Override
 	public void grantAccess() throws AccessDeniedException {
 		checkAccess(sessao.getUsuarioAtualizado(), "CUS DEV");
+	}
+	
+	public void baixarFoto() {
+		checkAccess(sessao.getUsuarioAtualizado(), "DEV");
+		HttpResponse<JsonNode> photo = Unirest.get(String.format("http://api.servicos.ccarj.intraer/sigpesApi/fotoes/%s", loginUnicoUsuario.getSaram())).asJson();
+		JSONObject obj = photo.getBody().getObject();
+		String type = obj.getString("tpArq");
+		String data = obj.getString("imFoto");
+		photoData = String.format("data:%s;base64,%s", type, data);
 	}
 	
 }

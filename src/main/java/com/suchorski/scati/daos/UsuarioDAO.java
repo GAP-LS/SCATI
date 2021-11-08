@@ -63,7 +63,7 @@ public class UsuarioDAO extends GenericDAO<Usuario, Long> {
 	}
 	
 
-	public List<Usuario> listaHistorico(Usuario usuario) {
+	public List<Usuario> listaHistorico(String cpf) {
 		CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class);
 		Root<Usuario> root = criteriaQuery.from(Usuario.class);
@@ -73,7 +73,7 @@ public class UsuarioDAO extends GenericDAO<Usuario, Long> {
 				criteriaBuilder.isNotNull(root.get(Usuario_.dataRemocao))))
 		.orderBy(criteriaBuilder.desc(root.get(Usuario_.dataRemocao)));
 		TypedQuery<Usuario> typedQuery = getEntityManager().createQuery(criteriaQuery);
-		typedQuery.setParameter(parameterExpression, usuario.getCpf());
+		typedQuery.setParameter(parameterExpression, cpf);
 		return typedQuery.getResultList();
 	}
 

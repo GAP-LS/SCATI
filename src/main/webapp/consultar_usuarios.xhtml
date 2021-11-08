@@ -18,6 +18,12 @@
 		<f:metadata>
 			<f:event type="preRenderView" listener="#{consultarUsuarios.grantAccess}" />
 		</f:metadata>
+		<p:toolbar id="buttons" rendered="#{sessao.usuario.hasPerfil('DEV')}">
+			<f:facet name="right">
+				<p:commandButton rendered="#{consultarUsuarios.loginUnicoUsuario ne null}" value="Ver foto do SIGPES" action="#{consultarUsuarios.baixarFoto}" onsuccess="PF('sigpesPhoto').show();" onerror="alert('Algo ocorreu, tente novamente.');" update="sigpesPhoto" styleClass="btn-warning btn-block" />
+			</f:facet>
+		</p:toolbar>
+		<p:spacer />
 		<h:form rendered="#{sessao.usuario.hasPerfil('CUS DEV')}">
 			<div class="ui-fluid">
 				<p:panel id="busca" header="Busca">
@@ -35,7 +41,7 @@
 							<f:selectItem itemLabel="OM (Local e apoiadas)" itemValue="om" />
 							<f:selectItem itemLabel="Força Aérea" itemValue="fab" />
 						</p:selectOneButton>
-						<p:commandButton value="Buscar" action="#{consultarUsuarios.buscar}" update="luInformation,uInformation,uPerfils" />
+						<p:commandButton value="Buscar" action="#{consultarUsuarios.buscar}" update="luInformation,uInformation,uPerfils,buttons" />
 					</p:panelGrid>
 				</p:panel>
 			</div>
@@ -112,8 +118,8 @@
 							<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
 						</h:outputText>
 					</p:panelGrid>
-					<p:spacer rendered="#{consultarUsuarios.usuario ne null and not empty consultarUsuarios.historicoCadastros}" />
-					<p:dataTable var="h" value="#{consultarUsuarios.historicoCadastros}" rendered="#{consultarUsuarios.usuario ne null and not empty consultarUsuarios.historicoCadastros}">
+					<p:spacer rendered="#{not empty consultarUsuarios.historicoCadastros}" />
+					<p:dataTable var="h" value="#{consultarUsuarios.historicoCadastros}" rendered="#{not empty consultarUsuarios.historicoCadastros}">
 						<f:facet name="header">
 							<h:outputText value="Cadastros anteriores" />
 						</f:facet>
@@ -148,6 +154,13 @@
 				</p:panel>
 			</div>
 		</h:form>
+		<p:dialog widgetVar="sigpesPhoto" header="Foto" modal="true" closable="true" resizable="false" showHeader="true" showEffect="fade" hideEffect="fade" closeOnEscape="true" dynamic="true">
+			<h:form id="sigpesPhoto">
+				<div class="ui-fluid">
+					<img src="#{consultarUsuarios.photoData}" style="max-width: 400px !important;" />
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 
 </ui:composition>
