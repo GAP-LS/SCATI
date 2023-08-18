@@ -46,6 +46,22 @@ public class UsuarioDAO extends GenericDAO<Usuario, Long> {
 		return typedQuery.getSingleResult();
 	}
 
+	public boolean hasPending(String cpf) {
+		CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class);
+		Root<Usuario> root = criteriaQuery.from(Usuario.class);
+		ParameterExpression<String> parameterExpression = criteriaBuilder.parameter(String.class);
+		criteriaQuery.select(root).where(
+				criteriaBuilder.and(
+						criteriaBuilder.equal(root.get(Usuario_.cpf), parameterExpression),
+						criteriaBuilder.isNull(root.get(Usuario_.dataInsercao)),
+						criteriaBuilder.isNull(root.get(Usuario_.dataRemocao))
+						));
+		TypedQuery<Usuario> typedQuery = getEntityManager().createQuery(criteriaQuery);
+		typedQuery.setParameter(parameterExpression, cpf);
+		return typedQuery.getResultList().isEmpty();
+	}
+
 	public List<Usuario> listAtivos() {
 		CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class);

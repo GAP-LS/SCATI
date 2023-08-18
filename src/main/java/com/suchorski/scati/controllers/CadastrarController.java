@@ -2,7 +2,6 @@ package com.suchorski.scati.controllers;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -58,9 +57,6 @@ public class CadastrarController implements Serializable {
 
 	@Getter @Setter private String cpf;
 	@Getter @Setter private String senhaCpf;
-	@Getter @Setter private boolean registrado;
-	@Getter @Setter private String usuario;
-	@Getter @Setter private String senhaUsuario;
 	@Getter @Setter private Usuario moderador;
 	@Getter @Setter private boolean aceitarTermo;
 	
@@ -89,20 +85,16 @@ public class CadastrarController implements Serializable {
 		try {
 			LoginUnicoUsuario loginUnicoUsuario = loginUnico.findUsuario(cpf, senhaCpf);
 			isVisitante = LoginLocalController.isVisitante(app.getOpcao().getListOmsApoiadas(), loginUnicoUsuario);
-			if (registrado) {
-				loginLocal.login(usuario, senhaUsuario);
-				if (isVisitante) {
-					moderadores = usuarioDAO.listModeradores(patenteDAO.findBySigla(loginUnicoUsuario.getPatente()));
-				}
-			} else if (loginLocal.hasValue(app.getOpcao().getAdAtributoCpf(), cpf)) {
-				registrado = true;
+			if (loginLocal.hasValue(app.getOpcao().getAdAtributoCpf(), cpf)) {
 				Messages.create("Aviso!").warn().detail("Usuário já possui registro na rede.").add();
 				return "";					
 			} else {
 				moderadores = usuarioDAO.listModeradores(patenteDAO.findBySigla(loginUnicoUsuario.getPatente()));
 			}
 			boolean hasAccount;
+			boolean hasPending = false;
 			try (UsuarioDAO gambiarra = new UsuarioDAO()) { // GAMBIARRA
+				hasPending = gambiarra.hasPending(cpf);
 				gambiarra.findByCpf(cpf); // GAMBIARRA
 				hasAccount = true;
 			} catch (NoResultException e) {
@@ -110,6 +102,10 @@ public class CadastrarController implements Serializable {
 			}
 			if (hasAccount) {
 				Messages.create("Aviso!").flash().warn().detail("Usuário já possui cadastro.").add();
+				return "login?faces-redirect=true";
+			}
+			if (hasPending) {
+				Messages.create("Aviso!").flash().warn().detail("Usuário já está pendente de moderação.").add();
 				return "login?faces-redirect=true";
 			}
 			aceitarTermo = true;
@@ -125,28 +121,17 @@ public class CadastrarController implements Serializable {
 			LoginUnicoUsuario loginUnicoUsuario = loginUnico.findUsuario(cpf, senhaCpf);
 			Patente patente = patenteDAO.findBySigla(loginUnicoUsuario.getPatente());
 			Usuario u = new Usuario(loginUnicoUsuario, patente, moderador);
-			if (registrado) {
-				loginLocal.migrar(loginUnicoUsuario, loginLocal.findByUsernameWithoutCpfSaramPin(usuario));
-				moderador = null;
-				u.setDataInsercao(new Date());
-			}
 			u.setVisitante(isVisitante);
 			UsuarioDAO gambiarra = new UsuarioDAO(); // GAMBIARRA
 			gambiarra.save(u); // GAMBIARRA
 			gambiarra.close(); // GAMBIARRA
-			if (!registrado) {
-				sendMail(moderador.getZimbra(), "Usuário pendente de moderação",
-						"Você possui usuários pendentes de moderação no sistema SCATI!\r\n\r\n"
-								+ "Usuário aguardando moderação: " + loginUnicoUsuario.getDisplayName() + "\r\n"
-								+ "Link para acesso ao sistema: http://" + System.getenv("SCATI_DOMAIN") + "/scati/moderar_usuarios.xhtml"
-						);
-			}
+			sendMail(moderador.getZimbra(), "Usuário pendente de moderação",
+					"Você possui usuários pendentes de moderação no sistema SCATI!\r\n\r\n"
+							+ "Usuário aguardando moderação: " + loginUnicoUsuario.getDisplayName() + "\r\n"
+							+ "Link para acesso ao sistema: http://" + System.getenv("SCATI_DOMAIN") + "/scati/moderar_usuarios.xhtml"
+					);
 			conversation.end();
-			if (!registrado) {
-				Messages.create("Sucesso!").flash().detail("Aguarde moderação do chefe selecionado.").add();
-			} else {				
-				Messages.create("Sucesso!").flash().detail("Usuário cadastrado com sucesso.").add();
-			}
+			Messages.create("Sucesso!").flash().detail("Aguarde moderação do chefe selecionado.").add();
 			return "login?faces-redirect=true";
 		} catch (ApplicationException e) {
 			Messages.create("Aviso!").warn().detail(e.getLocalizedMessage()).add();
