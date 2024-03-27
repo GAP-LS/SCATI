@@ -59,6 +59,7 @@ public class AguardandoModeracaoController implements AccessNeededController, Se
 			LoginUnicoUsuario loginUnicoUsuario = loginUnico.findByCpfOrSaram(usuarioForcado.getCpf());
 			loginLocal.criar(loginUnicoUsuario);
 			usuarioDAO.liberar(usuarioForcado, sessao.getUsuario());
+			aguardandoModeracao = usuarioDAO.listNaoModerados();
 			sessao.atualizaUsuario();
 			Messages.create("Sucesso!").detail("Usuário moderado com sucesso.").add();
 		} catch (ApplicationException e) {
