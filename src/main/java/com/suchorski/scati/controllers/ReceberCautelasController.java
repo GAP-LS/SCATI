@@ -38,12 +38,14 @@ public class ReceberCautelasController implements AccessNeededController, Serial
 	@Getter @Setter private Cautela cautela;
 	@Getter @Setter private String descricao;
 	@Getter @Setter private String assinatura;
+	@Getter @Setter private List<Cautela> cautelasAbertas;
 	
 	@PostConstruct
 	public void init() {
 		usuarioDAO = new UsuarioDAO();
 		usuarios = usuarioDAO.listAtivos();
 		usuario = usuarios.get(0);
+		cautelasAbertas = usuario.getCautelasAbertas();
 		cautelaDAO = new CautelaDAO();
 	}
 	
@@ -56,6 +58,7 @@ public class ReceberCautelasController implements AccessNeededController, Serial
 	public void receber() {
 		cautelaDAO.receber(cautela, sessao.getUsuario());
 		usuarioDAO.refresh(usuario);
+		cautelasAbertas = usuario.getCautelasAbertas();
 		Messages.create("Sucesso!").detail("Cautela recebida.").add();
 	}
 
