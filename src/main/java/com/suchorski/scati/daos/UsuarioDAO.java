@@ -120,6 +120,7 @@ public class UsuarioDAO extends GenericDAO<Usuario, Long> {
 				criteriaBuilder.equal(join2.get(TipoPatente_.ordem), parameterExpression1),
 				criteriaBuilder.le(join1.get(Patente_.ordem), parameterExpression2),
 				criteriaBuilder.isNotNull(root.get(Usuario_.dataInsercao)),
+				criteriaBuilder.isNull(root.get(Usuario_.dataRemocao)),
 				criteriaBuilder.equal(root.get(Usuario_.bloqueado), parameterExpression3)))
 		.orderBy(
 				criteriaBuilder.asc(join1.get(Patente_.ordem)),
