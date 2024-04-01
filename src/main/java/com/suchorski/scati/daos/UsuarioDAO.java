@@ -59,7 +59,7 @@ public class UsuarioDAO extends GenericDAO<Usuario, Long> {
 						));
 		TypedQuery<Usuario> typedQuery = getEntityManager().createQuery(criteriaQuery);
 		typedQuery.setParameter(parameterExpression, cpf);
-		return typedQuery.getResultList().isEmpty();
+		return !typedQuery.getResultList().isEmpty();
 	}
 
 	public List<Usuario> listAtivos() {
