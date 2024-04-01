@@ -26,11 +26,11 @@
 							<p:outputLabel for="senhaCpf" value="Senha:" />
 							<p:password id="senhaCpf" placeholder="Senha do Login Único" value="#{cadastro.senhaCpf}" required="true" requiredMessage="A senha é obrigatória" />
 							<p:outputLabel for="hasLogin" value="Registrado?" />
-							<p:selectBooleanCheckbox id="hasLogin" itemLabel="Já possuo cadastro na rede" value="#{cadastro.registrado}" binding="#{hasLogin}" />
-							<p:outputLabel for="usuario" value="Login de rede:" />
-							<p:inputText id="usuario" placeholder="Digite seu login de rede" value="#{cadastro.usuario}" required="#{hasLogin.value == 'true'}" requiredMessage="O Login é obrigatório" />
-							<p:outputLabel for="senhaUsuario" value="Senha:" />
-							<p:password id="senhaUsuario" placeholder="Senha de rede" value="#{cadastro.senhaUsuario}" required="#{hasLogin.value == 'true'}" requiredMessage="A senha é obrigatória" />
+							<p:selectBooleanCheckbox id="hasLogin" itemLabel="Já possuo cadastro na rede" value="#{cadastro.registrado}" binding="#{hasLogin}" rendered="#{app.enabledFromAd}" />
+							<p:outputLabel for="usuario" value="Login de rede:" rendered="#{app.enabledFromAd}" />
+							<p:inputText id="usuario" placeholder="Digite seu login de rede" value="#{cadastro.usuario}" required="#{hasLogin.value == 'true'}" requiredMessage="O Login é obrigatório" rendered="#{app.enabledFromAd}" />
+							<p:outputLabel for="senhaUsuario" value="Senha:" rendered="#{app.enabledFromAd}" />
+							<p:password id="senhaUsuario" placeholder="Senha de rede" value="#{cadastro.senhaUsuario}" required="#{hasLogin.value == 'true'}" requiredMessage="A senha é obrigatória" rendered="#{app.enabledFromAd}" />
 							<p:commandButton value="Voltar" action="#{cadastro.cancelar}" immediate="true" />
 							<p:commandButton id="next" value="Prosseguir" action="#{cadastro.prosseguir}" update="@form,message" />
 							<p:defaultCommand target="next" />
@@ -46,8 +46,9 @@
 								<f:selectItem itemLabel="Selecione o moderador" noSelectionOption="true" />
 								<f:selectItems value="#{cadastro.moderadores}" />
 							</p:selectOneMenu>
-							<p:commandButton value="Aceito os termos" action="#{cadastro.registrar}" update="message" rendered="#{not cadastro.registrado or cadastro.visitante}" />
-							<p:commandButton value="Aceito os termos" action="#{cadastro.registrar}" update="message" immediate="true" rendered="#{cadastro.registrado and not cadastro.visitante}" />
+							<p:commandButton value="Aceito os termos" action="#{cadastro.registrar}" update="message" rendered="#{not app.enabledFromAd}" />
+							<p:commandButton value="Aceito os termos" action="#{cadastro.registrar}" update="message" rendered="#{(not cadastro.registrado or cadastro.visitante) and app.enabledFromAd}" />
+							<p:commandButton value="Aceito os termos" action="#{cadastro.registrar}" update="message" immediate="true" rendered="#{cadastro.registrado and not cadastro.visitante and app.enabledFromAd}" />
 						</p:panelGrid>
 					</p:panel>
 				</h:form>
