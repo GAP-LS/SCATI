@@ -143,7 +143,7 @@ public class CadastrarController implements Serializable {
 				sendMail(moderador.getZimbra(), "Usuário pendente de moderação",
 						"Você possui usuários pendentes de moderação no sistema SCATI!\r\n\r\n"
 								+ "Usuário aguardando moderação: " + loginUnicoUsuario.getDisplayName() + "\r\n"
-								+ "Link para acesso ao sistema: http://" + System.getenv("SCATI_DOMAIN") + "/scaticiaar/moderar_usuarios.xhtml"
+								+ "Link para acesso ao sistema: http://" + System.getenv("SCATI_DOMAIN") + "/" + AplicacaoController.CONTEXT + "/moderar_usuarios.xhtml"
 						);
 			}
 			conversation.end();
