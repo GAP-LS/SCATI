@@ -42,7 +42,7 @@ public class LoginLocalUsuario {
 		this.nome = attrs.get(name).get().toString();
 		this.nomeCompleto = attrs.get("sn").get().toString();
 		this.nomeGuerra = attrs.get("givenName").get().toString();
-		this.patente = attrs.get("initials").get().toString();
+		this.patente = attrs.get("initials") == null ? "ND" : attrs.get("initials").get().toString();
 		this.nomeExibicao = attrs.get("displayName").get().toString();
 		this.login = attrs.get(login).get().toString();
 		this.loginMail = attrs.get(loginMail).get().toString();
