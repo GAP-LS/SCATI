@@ -25,7 +25,7 @@
 							<p:inputMask id="cpf" placeholder="Digite seu CPF" value="#{cadastro.cpf}" required="true" requiredMessage="O CPF é obrigatório" mask="999.999.999-99" converter="cpf" />
 							<p:outputLabel for="senhaCpf" value="Senha:" />
 							<p:password id="senhaCpf" placeholder="Senha do Login Único" value="#{cadastro.senhaCpf}" required="true" requiredMessage="A senha é obrigatória" />
-							<p:outputLabel for="hasLogin" value="Registrado?" />
+							<p:outputLabel for="hasLogin" value="Registrado?" rendered="#{app.enabledFromAd}" />
 							<p:selectBooleanCheckbox id="hasLogin" itemLabel="Já possuo cadastro na rede" value="#{cadastro.registrado}" binding="#{hasLogin}" rendered="#{app.enabledFromAd}" />
 							<p:outputLabel for="usuario" value="Login de rede:" rendered="#{app.enabledFromAd}" />
 							<p:inputText id="usuario" placeholder="Digite seu login de rede" value="#{cadastro.usuario}" required="#{hasLogin.value == 'true'}" requiredMessage="O Login é obrigatório" rendered="#{app.enabledFromAd}" />
