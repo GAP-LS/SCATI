@@ -2,6 +2,7 @@ package com.suchorski.scati.controllers;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -57,6 +58,9 @@ public class CadastrarController implements Serializable {
 
 	@Getter @Setter private String cpf;
 	@Getter @Setter private String senhaCpf;
+	@Getter @Setter private boolean registrado;
+	@Getter @Setter private String usuario;
+	@Getter @Setter private String senhaUsuario;
 	@Getter @Setter private Usuario moderador;
 	@Getter @Setter private boolean aceitarTermo;
 	
@@ -85,7 +89,12 @@ public class CadastrarController implements Serializable {
 		try {
 			LoginUnicoUsuario loginUnicoUsuario = loginUnico.findUsuario(cpf, senhaCpf);
 			isVisitante = LoginLocalController.isVisitante(app.getOpcao().getListOmsApoiadas(), loginUnicoUsuario);
-			if (loginLocal.hasValue(app.getOpcao().getAdAtributoCpf(), cpf)) {
+			if (registrado) {
+				loginLocal.login(usuario, senhaUsuario);
+				if (isVisitante) {
+					moderadores = usuarioDAO.listModeradores(patenteDAO.findBySigla(loginUnicoUsuario.getPatente()));
+				}
+			} else if (loginLocal.hasValue(app.getOpcao().getAdAtributoCpf(), cpf)) {
 				Messages.create("Aviso!").warn().detail("Usuário já possui registro na rede.").add();
 				return "";					
 			} else {
@@ -121,17 +130,28 @@ public class CadastrarController implements Serializable {
 			LoginUnicoUsuario loginUnicoUsuario = loginUnico.findUsuario(cpf, senhaCpf);
 			Patente patente = patenteDAO.findBySigla(loginUnicoUsuario.getPatente());
 			Usuario u = new Usuario(loginUnicoUsuario, patente, moderador);
+			if (registrado) {
+				loginLocal.migrar(loginUnicoUsuario, loginLocal.findByUsernameWithoutCpfSaramPin(usuario));
+				moderador = null;
+				u.setDataInsercao(new Date());
+			}
 			u.setVisitante(isVisitante);
 			UsuarioDAO gambiarra = new UsuarioDAO(); // GAMBIARRA
 			gambiarra.save(u); // GAMBIARRA
 			gambiarra.close(); // GAMBIARRA
-			sendMail(moderador.getZimbra(), "Usuário pendente de moderação",
-					"Você possui usuários pendentes de moderação no sistema SCATI!\r\n\r\n"
-							+ "Usuário aguardando moderação: " + loginUnicoUsuario.getDisplayName() + "\r\n"
-							+ "Link para acesso ao sistema: http://" + System.getenv("SCATI_DOMAIN") + "/scati/moderar_usuarios.xhtml"
-					);
+			if (!registrado) {
+				sendMail(moderador.getZimbra(), "Usuário pendente de moderação",
+						"Você possui usuários pendentes de moderação no sistema SCATI!\r\n\r\n"
+								+ "Usuário aguardando moderação: " + loginUnicoUsuario.getDisplayName() + "\r\n"
+								+ "Link para acesso ao sistema: http://" + System.getenv("SCATI_DOMAIN") + "/scaticiaar/moderar_usuarios.xhtml"
+						);
+			}
 			conversation.end();
-			Messages.create("Sucesso!").flash().detail("Aguarde moderação do chefe selecionado.").add();
+			if (!registrado) {
+				Messages.create("Sucesso!").flash().detail("Aguarde moderação do chefe selecionado.").add();
+			} else {				
+				Messages.create("Sucesso!").flash().detail("Usuário cadastrado com sucesso.").add();
+			}
 			return "login?faces-redirect=true";
 		} catch (ApplicationException e) {
 			Messages.create("Aviso!").warn().detail(e.getLocalizedMessage()).add();
